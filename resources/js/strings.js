@@ -1,0 +1,1 @@
+loadTimeData.data = {"fontfamily":"'Segoe UI',Arial,'Microsoft Yahei',sans-serif","fontsize":"75%","language":"zh","textdirection":"ltr"};

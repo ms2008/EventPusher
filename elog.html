@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="resources/css/all.css">
+	</head>
+
+	<body onload="connect()">
+		<div id="header">
+			<span>&nbsp;</span>
+			<button id="connect"></button>
+			<span>Event Center System Timeline (Build 2016-02-03)</span>
+		</div>
+		<div id="main">
+			<div class="res-box">
+				<div class="search-bar"></div>
+				<div class="res-list">
+					<table id="res-table" cellpadding="0" cellspacing="0">
+						<thead>
+							<tr>
+								<th width="30"><input type="checkbox"></th>
+								<th width="130">Time</th>
+								<th width="160">Source Type</th>
+								<th>Message</th>
+							</tr>
+						</thead>
+						<tbody id="tbody" rules="none"></tbody>
+					</table>
+				</div>
+			</div>
+			<div id="res-more">
+				<pre id="res-more-inner"></pre>
+			</div>
+		</div>
+		<div id="footer"></div>
+	</body>
+
+	<script>
+
+	// ------------------
+
+	function trim (str) {
+		return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g,'');
+	}
+
+	function hasClass (el, cn) {
+		return (' ' + el.className + ' ').indexOf(' ' + cn + ' ') !== -1;
+	}
+
+	function addClass (el, cn) {
+		if ( !hasClass(el, cn) ) {
+			el.className = (el.className === '') ? cn : el.className + ' ' + cn;
+		}
+	}
+
+	function removeClass (el, cn) {
+		el.className = trim((' ' + el.className + ' ').replace(' ' + cn + ' ', ' '));
+	}
+	// ------------------
+
+
+
+	var ws = null;
+
+	var count = 0;
+
+	var tbody = document.getElementById('tbody');
+
+	var msgMore = document.getElementById('res-more-inner');
+
+	var checkedItem = null;
+
+	tbody.addEventListener('click', function (e) {
+
+		var target = e.target;
+
+		var trNode = null;
+
+		var checkboxNode = null;
+
+		if (target.nodeName === 'INPUT') {
+			trNode = e.target.parentNode.parentNode;
+			checkbox = target;
+		} else {
+			trNode = e.target.parentNode;
+			checkbox = trNode.firstChild.firstChild;
+		}
+
+		if (checkedItem) {
+			try {
+				var oldInput = checkedItem.firstChild.firstChild;
+				oldInput.checked = false;
+				removeClass(checkedItem, 'tr-checked');
+			} catch (e) {
+				throw e;
+			}
+		}
+
+		if (checkedItem === trNode ) {
+			checkedItem = null;
+			// 设置选中状态
+			checkbox.checked = false;
+			removeClass(trNode, 'tr-checked');
+		} else {
+			checkedItem = trNode;
+			// 设置选中状态
+			checkbox.checked = true;
+			addClass(trNode, 'tr-checked');
+		}
+
+		// 右侧显示当前选中项消息
+		var msg = trNode.dataset.msg;
+  		var json = JSON.parse(msg);
+  		var jsonTextFormatted = JSON.stringify(json, null, 2);
+		msgMore.innerHTML = jsonTextFormatted;
+	});
+
+    var connectBtn = document.getElementById('connect');
+
+    // 监听连接
+    connectBtn.addEventListener('click', switchConnect);
+
+    // switchConnect
+    function switchConnect () {
+    	if (ws) {
+    		disconnect();
+
+    	} else {
+    		connect();
+    	}
+    }
+
+    // connect
+    function connect () {
+    	if (ws !== null) return;
+
+    	ws = new WebSocket('ws://log.ulucu.com/pull');
+
+    	 ws.onopen = function () {
+	    	console.log('ws open');
+	    	connectBtn.textContent = 'disconnect';
+	    };
+
+	    ws.onerror = function () {
+	    	throw new Error('ws error');
+	    };
+
+	    ws.onmessage = function (e) {
+	    	log(e.data);
+	    };
+
+	    ws.onclose = function () {
+	    	console.log('ws close');
+	    	connectBtn.textContent = 'connect';
+	    	ws = null;
+	    };
+    }
+
+    // disconnect
+    function disconnect () {
+    	if (ws === null) return;
+    	ws.close();
+    }
+
+    // log
+	function log(data) {
+
+		count++;
+
+		if (count > 500) {
+			tbody.removeChild(tbody.lastChild);
+		}
+
+		var tr = document.createElement('tr');
+
+		tr.dataset.msg = data;
+
+		data = JSON.parse(data);
+
+		if (data.severity == 5) {
+			tr.className = 'source-socket inactive tr-style-5';
+		} else if (data.severity == 3) {
+			tr.className = 'source-socket inactive tr-style-3';
+		} else if (data.severity == 1) {
+			tr.className = 'source-socket inactive tr-style-1';
+		} else {
+			tr.className = 'source-socket inactive';
+		}
+
+
+		var td1 = document.createElement('td');
+
+		var ipt = document.createElement('input');
+		ipt.type = 'checkbox';
+		ipt.title = data.id;
+		td1.appendChild(ipt);
+		tr.appendChild(td1);
+
+
+		var td2 = document.createElement('td');
+		td2.textContent = data.id;
+		tr.appendChild(td2);
+
+		var td3 = document.createElement('td');
+		td3.textContent = data.type;
+		tr.appendChild(td3);
+
+		var td4 = document.createElement('td');
+		td4.textContent = data.msg;
+		tr.appendChild(td4);
+
+    	tbody.insertBefore(tr, tbody.firstChild);
+
+	}
+	</script>
+</html>

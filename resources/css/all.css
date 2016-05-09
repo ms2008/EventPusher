@@ -1,0 +1,121 @@
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td { margin:0; padding:0; }
+/*body, button, input, select, textarea { font:12px/1.5tahoma, arial, \5b8b\4f53; }*/
+body, button, input, select, textarea { 
+  font-family: 'Segoe UI',Arial,'Microsoft Yahei',sans-serif;
+  font-size: 75%;
+}
+h1, h2, h3, h4, h5, h6{ font-size:100%; }
+address, cite, dfn, em, var { font-style:normal; }
+code, kbd, pre, samp { font-family:couriernew, courier, monospace; }
+small{ font-size:12px; }
+ul, ol { list-style:none; }
+a { text-decoration:none; }
+a:hover { text-decoration:underline; }
+sup { vertical-align:text-top; }
+sub{ vertical-align:text-bottom; }
+legend { color:#000; }
+fieldset, img { border:0; }
+button, input, select, textarea { font-size:100%; }
+table { border-collapse:collapse; border-spacing:0; }
+
+#header {
+    height: 32px;
+    line-height: 32px;
+    width: 100%;
+    border-bottom: 1px solid gray;
+    color: #fff;
+    background: rgb(200, 8, 8);
+    font-size: 133%;
+}
+
+#connect {
+    background: #efefef;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-right: 12px;
+    width: 82px;
+    cursor: pointer;
+    border: 1px solid #cdcdcd;
+    padding: 1px 0;
+}
+
+#main {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 32px;
+    bottom: 0;
+}
+
+.res-box {
+    width: 50%;
+    border-right: 1px solid #cdcdcd;
+    height: 100%;
+}
+
+.search-bar {
+}
+.res-list {
+    height: 100%;
+    overflow-x: scroll;
+}
+
+#res-table{
+    width: 100%;
+}
+
+#res-table thead tr {
+    background: rgb(227, 236, 249);
+}
+
+.tr-style-5 {
+    background: #FFF5F5;
+}
+
+.tr-style-3 {
+    background: #fff;
+}
+
+.tr-style-1 {
+    background: #F5FFF5;
+}
+
+#res-table th {
+    line-height: 28px;
+    text-align: left;
+}
+
+#res-table td {
+    line-height: 26px;
+    text-align: left;
+}
+
+#res-table th, #res-table td {
+    border: 1px solid #cdcdcd;
+    padding-left: 5px;
+}
+
+#res-table th:last-child, #res-table td:last-child {
+    border-right: 0 none;
+}
+
+#res-more {
+    position: fixed;
+    width: 50%;
+    top: 32px;
+    right: 0;
+    bottom: 0;
+}
+
+#res-more-inner {
+    font-size: 120%;
+    padding: 20px;
+}
+
+.inactive:hover {
+    cursor: pointer;
+}
+
+.tr-checked {
+    background: rgb(195, 217, 255);
+}
